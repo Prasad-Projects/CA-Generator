@@ -1,5 +1,5 @@
 # Mmtp
-Add Google Mamps API key to config file and run 'mix deps.get'
+Add Google Maps API key to config file and run 'mix deps.get'
 
 To search for nearby stations in a city, run
 
