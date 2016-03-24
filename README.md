@@ -1,15 +1,20 @@
 # Mmtp
-Add Google Maps API key to config file and run 'mix deps.get'
 
-To search for nearby stations in a city, run
+**TODO: Add description**
 
-```
- mix run lib/mmtp.exs search mumbai
-```
+## Installation
 
-To geocode all addresses in the DB, simply run,
+If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
 
-```
-mix run lib/mmtp.exs
-```
+  1. Add mmtp to your list of dependencies in `mix.exs`:
+
+        def deps do
+          [{:mmtp, "~> 0.0.1"}]
+        end
+
+  2. Ensure mmtp is started before your application:
+
+        def application do
+          [applications: [:mmtp]]
+        end
 
