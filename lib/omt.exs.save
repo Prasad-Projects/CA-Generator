@@ -1,0 +1,76 @@
+defmodule Omt do
+
+def omt_gen do
+ {:ok, p} =  Mariaex.Connection.start_link(username: "root", password: "mmtp123", database: "mmtp")
+ {:ok,result} = Mariaex.Connection.query(p, "SELECT DISTINCT results FROM station_details WHERE results IS NOT NULL LIMIT 1")
+ stations = Map.get(result, :rows)
+ results = stations
+ |> Enum.map(fn(x) -> get_matrix(x) end)
+ |> List.flatten
+ |> Enum.uniq
+ |> Enum.map(fn x -> prepare_line(x) end)
+ |> Enum.uniq
+ |> Enum.map(fn x -> save(x, p) end)
+end
+
+def save([src, dest, duration, distance], p) do
+ {:ok,result} = Mariaex.Connection.query(p, "INSERT INTO omt (src, dest, distance, duration) VALUES ('#{src}', '#{dest}', '#{distance}', '#{duration}')")
+ IO.inspect result
+ "#{src} #{dest} #{duration}"
+end
+
+def get_matrix(x) do
+ json_x = get_json(x)
+end
+
+def get_json(x) do
+ {:ok, data} = x
+ |> Enum.at(0)
+ |> JSON.decode
+ data
+end
+
+
+def prepare_line(data) do
+   origin = data["origin"]
+   destination = data["destination"]
+    seconds = 0
+   hours = Regex.scan(~r/[0-9]+ hour/, "#{data["data"]["duration"]["text"]}") |> Enum.at(0)
+   if hours != nil do
+     hours = hours |> Enum.at(0) |> String.split(" ") |> Enum.at(0)
+     seconds = seconds + (String.to_integer(hours))*3600
+   end
+   mins = Regex.scan(~r/[0-9]+ min/, "#{data["data"]["duration"]["text"]}") |> Enum.at(0)
+   if mins != nil do
+     mins = mins |> Enum.at(0) |> String.split(" ") |> Enum.at(0)
+     seconds = seconds + (String.to_integer(mins)*60)
+   end
+   #"#{origin} #{destination} #{seconds}"
+   distance = data["data"]["distance"]["text"] |> String.split(" ") |> Enum.at(0)
+   [origin, destination, seconds, distance]
+end
+
+def lone_stations do
+ {:ok, p} =  Mariaex.Connection.start_link(username: "root", password: "mmtp123", database: "mmtp")
+ {:ok,result} = Mariaex.Connection.query(p, "SELECT COUNT(*) FROM station_details  WHERE results IS NULL")
+ count = result |> Map.get(:rows) |> Enum.at(0) |> Enum.at(0)
+ per_page = 300
+ total_pages = div(count,per_page) + 1
+ total_pages = 1
+ (0..total_pages)
+ |> Enum.map(fn x -> get_batch(per_page, x) end)
+end
+
+def get_batch(per_page, page_number) do
+ limit = per_page
+ offset = page_number * limit
+ {:ok, p} =  Mariaex.Connection.start_link(username: "root", password: "mmtp123", database: "mmtp")
+ {:ok,result} = Mariaex.Connection.query(p, "SELECT * FROM station_details WHERE results IS NULL AND LIMIT #{limit} OFFSET #{offset} NOT IN (SELECT * from station_details WHERE )")
+ result |> Map.get(:rows) 
+end
+
+end
+
+
+#IO.inspect Omt.omt_gen
+IO.inspect Omt.lone_stations
