@@ -1,0 +1,21 @@
+defmodule Dct do 
+ @p Mariaex.Connection.start_link(username: "sushruth456", password: "sushruth456", database: "mmtp")
+ def dct_txt do
+   {:ok, p} = @p 
+   {:ok,result} = Mariaex.Connection.query(p, "SELECT DISTINCT Train_Num FROM TrainschdInfo", [], timeout: 500000)
+   result = result
+   |> Map.get(:rows)
+   |> Enum.slice(0,1)
+   |> Enum.map(fn x -> get_c(train_id) end)
+ end
+
+ def get_c(train_id) do
+   {:ok, p} = @p
+   {:ok,result} = Mariaex.Connection.query(p, "SELECT * FROM TrainschdInfo WHERE Train_Num = #{train_id}", [], timeout: 500000)
+   result = result
+   |> Map.get(:rows)
+ end
+end
+
+
+Dct.dct_txt

@@ -24,7 +24,7 @@ defmodule Mmtp do
  def geocode_bus(stop) do
   name = Enum.at(stop, 0)
   url_name = String.replace(name, " ", "%20")
-  url = "https://maps.googleapis.com/maps/api/geocode/json?address=#{url_name}%20bus%20station,India&key=AIzaSyCgEUBBK2jh3eMcT7RajrxNolcmpZBiSmQ"
+  url = "https://maps.googleapis.com/maps/api/geocode/json?address=#{url_name}%20bus%20station,India&key=AIzaSyCsQ_Te4SqDvnBgcWL1KIMxIqYoZTC_SGY"
   case HTTPoison.get(url) do
    {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
      {:ok, address} = body |> String.replace("\n", "") |> JSON.decode
@@ -62,7 +62,6 @@ defmodule Mmtp do
    |> Enum.map(fn x -> [Enum.at(x, 0), "place_id:#{place_id(Enum.at(x,1))}"] end)
    matrix = get_distance_matrix(stations)    
    {:ok, matrix} = matrix |> List.flatten |> JSON.encode
-      
    persist_search(station_ids, "#{matrix}")
   end
  end
@@ -89,21 +88,19 @@ defmodule Mmtp do
    origin = origins |> Enum.at(i)
    {matrix_attached, count} = matrix 
    |> Enum.map_reduce(0, fn(x, i) -> { attach_data_single("#{origin |> Enum.at(0)}", destinations |> Enum.at(i), x)  ,  i+1 } end) 	 	
-   IO.inspect matrix
     matrix_attached |> List.flatten
  end
 
  def attach_data_single(origin, destination, data) do
-   IO.inspect data
    %{origin: "#{origin}",destination: "#{destination |> Enum.at(0)}", data: data}
  end
 
  def get_matrix(origins, destinations, stations) do 
     address_params = %{origins: Enum.map(origins, fn x -> Enum.at(x, 1) end), destinations: Enum.map(destinations, fn x -> Enum.at(x, 1) end)}
     #{matrix, count} = address_params 
+    IO.inspect address_params
     x = address_params
     |> DistanceMatrixApi.get_distances
-    IO.inspect x
     {matrix, count} = x    
     |> Map.fetch!("rows") 
     |> Enum.map_reduce(0, fn x, i -> {attach_data(origins, destinations, Map.fetch!(x, "elements"), i), i + 1} end)
@@ -166,7 +163,7 @@ end
   url_name = String.replace(name, " ", "%20")
 #15
   
- url = "https://maps.googleapis.com/maps/api/geocode/json?address=#{url_name}%20#{code},India&key=AIzaSyBvIygol9nZhd3tj_sxTUSuyXXvyeEQMZM"
+ url = "https://maps.googleapis.com/maps/api/geocode/json?address=#{url_name}%20#{code},India&key=AIzaSyCsQ_Te4SqDvnBgcWL1KIMxIqYoZTC_SGY"
 
  case HTTPoison.get(url) do
    {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->

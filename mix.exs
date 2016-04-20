@@ -27,6 +27,6 @@ defmodule Mmtp.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:mariaex, "~> 0.4.2"}, {:distancex, "~> 0.1.0"}, {:httpoison, "~> 0.8.0"}, { :json,   "~> 0.3.0"}, {:distance_api_matrix, "~> 1.0"}]
+    [{:mariaex, "~> 0.4.2"}, {:distancex, "~> 0.1.0"}, {:httpoison, "~> 0.8.0"}, { :json,   "~> 0.3.0"}, {:distance_api_matrix, git: "https://github.com/sivsushruth/distance-matrix-api"}]
   end
 end
