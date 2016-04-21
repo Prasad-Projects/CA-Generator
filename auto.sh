@@ -11,11 +11,11 @@ echo "3. OMT DB Persisted "
 echo "4. OMT.txt Generated"
 echo "=================== Connection scripts running ========================"
 rm data/connections.txt
-mix run lib/connections.exs
+#mix run lib/connections.exs
 echo "1. Connections for trains created"
-#mix run lib/save_connections.exs
-#echo "2. Connections for trains DB Persisted"
-#mix run lib/bus.exs
-#echo "3. Connections for bus created and DB Persisted"
-#mix run lib/airline.exs
-#echo "4. Connections for airlines created and DB persisted"
+mix run lib/save_connections.exs
+echo "2. Connections for trains DB Persisted"
+mix run lib/bus.exs
+echo "3. Connections for bus created and DB Persisted"
+mix run lib/airline.exs
+echo "4. Connections for airlines created and DB persisted"
