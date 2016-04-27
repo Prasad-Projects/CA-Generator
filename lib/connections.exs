@@ -115,7 +115,7 @@ end
    nil -> 
     nil
    _   ->
-    {:ok,result} = Mariaex.Connection.query(p, "SELECT * FROM station_details WHERE station_name = \"#{Enum.at(result, 1)}\"")
+    {:ok,result} = Mariaex.Connection.query(p, "SELECT * FROM station_details WHERE station_name = \"#{Enum.at(result, 1)}\"", [], timeout: 99999999)
     result = Map.get(result, :rows) |> Enum.at(0)
     id = Enum.at(result, 0)
     {:ok,result} = Mariaex.Connection.query(p, "SELECT * FROM seq WHERE station_id = #{id}")

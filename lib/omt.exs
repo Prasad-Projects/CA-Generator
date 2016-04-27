@@ -16,7 +16,7 @@ end
 
 def omt_txt_gen do
  {:ok, p} =  Mariaex.Connection.start_link(username: "sushruth456", password: "sushruth456", database: "mmtp")
- content = 0..16053
+ content = 0..16280
  |> Enum.chunk(500, 500, []) 
  |> Enum.map(fn x -> get_omt_rows(x, p) end) 
  |> Enum.join("\n")
