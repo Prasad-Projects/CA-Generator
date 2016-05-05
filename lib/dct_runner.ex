@@ -1,4 +1,4 @@
-require Dct
+#require Dct
 defmodule DctRunner do
   import ExProf.Macro
   def go do
@@ -18,7 +18,7 @@ defmodule DctRunner do
       
   def run_profile(n) do
     result =  profile do
-       Dct.dct_txt(n)
+ #      Dct.dct_txt(n)
     end
     format_result(result)
   end

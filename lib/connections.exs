@@ -1,6 +1,12 @@
 defmodule Connection do
  def fetch_train_connections(size, offset) do 
   sch = fetch_train_days
+  station_ids = fetch_station_ids
+  :ets.new(:station_ids, [:public, :named_table])
+  IO.puts "Running connections script (This may take a few minutes) ........"
+  station_ids
+  |> Enum.map(fn {code, id} -> :ets.insert(:station_ids, {String.strip(code), id}) end)
+
   tasks = (1..50879)
   |> Enum.chunk(1000, 1000,  [])
   |> Enum.map(fn x -> Task.async(fn -> batch_trips(x, sch) end) end)
@@ -86,7 +92,6 @@ end
      [train_number, o_id, d_id, dep_s, arr_s,  mode]
     rescue
      _ -> 
-      IO.puts "error *************************************************************************************************************"
       nil
     end
   end
@@ -95,8 +100,8 @@ end
  def connection_from_trip(src, dst, p) do
   [_, train_number, o_code, _, _, dep] = src
   [_, _, d_code, _, arr, _]= dst
-  o_id = get_station_id(o_code, p)
-  d_id = get_station_id(d_code, p)
+  {_, o_id} = :ets.lookup(:station_ids, String.strip(o_code)) |> Enum.at(0)
+  {_, d_id} = :ets.lookup(:station_ids, String.strip(d_code)) |> Enum.at(0)
   case dep do 
     "Destination" ->
      nil
@@ -106,20 +111,35 @@ end
      [train_number, o_id, d_id, dep_s, arr_s, "train"]  
   end
  end
+ 
+ def fetch_station_ids do 
+  {:ok, p} = Mariaex.Connection.start_link(username: "sushruth456", password: "sushruth456", database: "mmtp")
+  {:ok,codes} = Mariaex.Connection.query(p, "SELECT DISTINCT stn_code FROM TrainschdInfo")
+  codes = codes |> Map.get(:rows)
+  {:ok,info} = Mariaex.Connection.query(p, "SELECT * FROM StationInfo")
+  info = info |> Map.get(:rows)
+  {:ok, names} = Mariaex.Connection.query(p, "SELECT DISTINCT id, station_name FROM station_details", [], timeout: 999999)
+  names = names |> Map.get(:rows)
+  {:ok,seq} = Mariaex.Connection.query(p, "SELECT * FROM seq")
+  seq = seq |> Map.get(:rows)
+  result = codes
+  |> Enum.map(fn [x] -> {x, get_station_id(x, info, names, seq)} end)
+ end
 
- def get_station_id(code, p) do
-  {:ok,result} = Mariaex.Connection.query(p, "SELECT * FROM StationInfo WHERE Station_Code = \"#{code}\"")
-  result = Map.get(result, :rows)  
-  |> Enum.at(0)
-  case result do 
-   nil -> 
+ def get_station_id(code, info, names, seq) do
+  result = Enum.find(info, fn [_, _, x] -> String.rstrip(x) == String.rstrip(code)  end)
+  case result do
+   nil ->
     nil
    _   ->
-    {:ok,result} = Mariaex.Connection.query(p, "SELECT * FROM station_details WHERE station_name = \"#{Enum.at(result, 1)}\"", [], timeout: 99999999)
-    result = Map.get(result, :rows) |> Enum.at(0)
-    id = Enum.at(result, 0)
-    {:ok,result} = Mariaex.Connection.query(p, "SELECT * FROM seq WHERE station_id = #{id}")
-     Map.get(result, :rows) |> Enum.at(0) |> Enum.at(0)
+    [_, name, _] = result
+    IO.inspect result
+    station_detail = Enum.find(names, fn [_, x] -> x == name  end) |> Enum.at(0)
+    seq_id = Enum.find(seq, fn [seq_id_a, id] -> id == station_detail end) 
+    # if Enum.at(seq_id, 1) == "2234" do
+#      IO.inspect seq_id
+    #end
+    id = Enum.at(seq_id, 0)
   end
  end
 

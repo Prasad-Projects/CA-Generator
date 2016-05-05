@@ -1,0 +1,1 @@
+SELECT * FROM connections LEFT JOIN MetaData ON MetaData.src=connections.src AND MetaData.dest=connections.dest AND MetaData.vehicle_id=connections.vehicle_id LIMIT 2;

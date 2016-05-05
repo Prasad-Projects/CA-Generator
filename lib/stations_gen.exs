@@ -1,7 +1,7 @@
 defmodule StationsGen do
 
 def main do
- {:ok, p} =  Mariaex.Connection.start_link(username: "root", password: "mmtp123", database: "mmtp")
+ {:ok, p} =  Mariaex.Connection.start_link(username: "root", password: "mmtp_123", database: "mmtp")
  {:ok,seq} = Mariaex.Connection.query(p, "SELECT * from seq")
  seq = seq |> Map.fetch!(:rows) 
  seq
@@ -16,7 +16,7 @@ def write_to_file(x) do
  IO.binwrite file, x
 end
 
-@p  Mariaex.Connection.start_link(username: "root", password: "mmtp123", database: "mmtp")
+@p  Mariaex.Connection.start_link(username: "root", password: "mmtp_123", database: "mmtp")
 def get_details([seq, station_id]) do 
  {:ok, p} = @p
  {:ok,result} = Mariaex.Connection.query(p, "SELECT id, station_name, mode FROM station_details WHERE id = #{station_id}")
@@ -27,7 +27,7 @@ def get_details([seq, station_id]) do
 end
 
 def query(x) do
- {:ok, p} =  Mariaex.Connection.start_link(username: "root", password: "mmtp123", database: "mmtp")
+ {:ok, p} =  Mariaex.Connection.start_link(username: "root", password: "mmtp_123", database: "mmtp")
  {:ok,result} = Mariaex.Connection.query(p, "SELECT id, station_name, mode FROM station_details WHERE id IN (#{x})")
  
  result = result 
