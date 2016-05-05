@@ -1,0 +1,1 @@
+use mmtp; LOAD DATA INFILE 'data/dct.txt' INTO TABLE dct FIELDS TERMINATED BY ' ' ENCLOSED BY '' LINES TERMINATED BY '\n'; -u root -pmmtp_123
