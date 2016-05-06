@@ -54,5 +54,7 @@ rm /var/lib/mysql/mmtp/metadata.txt
 cp data/metadata.txt /var/lib/mysql/mmtp
 echo "7. Persisting metadata for trains"
 echo "use mmtp; LOAD DATA INFILE 'metadata.txt' INTO TABLE MetaData FIELDS TERMINATED BY ' ' ENCLOSED BY '' LINES TERMINATED BY '\n';" | mysql -u root -pmmtp_123
-(mix run lib/meta_text.exs >/dev/null 2>&1) & spinner
-(mix run lib/meta_text.exs >/dev/null 2>&1) & spinner
+echo "8. Persisting metadata for airlines"
+(mix run lib/airline_meta.exs >/dev/null 2>&1) & spinner
+echo "9. Persisting metadata for buses"
+(mix run lib/bus_text.exs >/dev/null 2>&1) & spinner
