@@ -15,13 +15,15 @@ spinner()
 }
 
 echo "================== Housekeeping ==========================="
-echo "1. Sequence generating"
+echo "0. Sequence generating"
 ((mix run lib/sequence.exs >/dev/null 2>&1) & spinner) & spinner
 echo "=================== OMT scripts running (Will take a while, please wait)========================="
-(mix run lib/omt_run.exs >/dev/null 2>&1) & spinner
 echo "1. Distance Matrix for Cities containing Airports"
-(mix run lib/omt.exs lone_stations >/dev/null 2>&1) & spinner
+#Requires google api
+(mix run lib/omt_run.exs >/dev/null 2>&1) & spinner
 echo "2. Distance Matrix Lone Stations "
+#Requires google api
+(mix run lib/omt.exs lone_stations >/dev/null 2>&1) & spinner
 rm data/omt.txt >/dev/null 2>&1
 echo "3. OMT DB persisting "
 (mix run lib/omt.exs omt_gen >/dev/null 2>&1) & spinner
