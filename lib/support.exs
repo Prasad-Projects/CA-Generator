@@ -78,4 +78,4 @@ defmodule Support do
   end
 end
 
-IO.inspect Support.create_omt()
+Support.create_omt()

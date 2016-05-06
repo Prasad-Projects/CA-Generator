@@ -29,5 +29,5 @@ use Mix.Config
 #
 #     import_config "#{Mix.env}.exs"
 
-config :distancex, api_key: "AIzaSyCsQ_Te4SqDvnBgcWL1KIMxIqYoZTC_SGY"
-config :distance_api_matrix, api_key: "AIzaSyCsQ_Te4SqDvnBgcWL1KIMxIqYoZTC_SGY"
+config :distancex, api_key: System.get_env("google_api_key")
+config :distance_api_matrix, api_key: System.get_env("google_api_key")

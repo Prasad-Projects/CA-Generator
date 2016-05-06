@@ -52,7 +52,7 @@ echo "6. Generating metadata text for trains"
 (mix run lib/meta_text.exs >/dev/null 2>&1) & spinner
 rm /var/lib/mysql/mmtp/metadata.txt
 cp data/metadata.txt /var/lib/mysql/mmtp
-echo "6. Persisting metadata for trains"
+echo "7. Persisting metadata for trains"
 echo "use mmtp; LOAD DATA INFILE 'metadata.txt' INTO TABLE MetaData FIELDS TERMINATED BY ' ' ENCLOSED BY '' LINES TERMINATED BY '\n';" | mysql -u root -pmmtp_123
 (mix run lib/meta_text.exs >/dev/null 2>&1) & spinner
 (mix run lib/meta_text.exs >/dev/null 2>&1) & spinner
