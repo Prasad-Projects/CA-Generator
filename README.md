@@ -1,20 +1,9 @@
-# Mmtp
+# Mmtp Data generation and transformation
 
-**TODO: Add description**
+Clone and run `sh auto.sh`
 
-## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+Skeleton db is present in data/mmtp_skeleton.sql.
+** The db does not contain geocoded address and distance matrices**
 
-  1. Add mmtp to your list of dependencies in `mix.exs`:
-
-        def deps do
-          [{:mmtp, "~> 0.0.1"}]
-        end
-
-  2. Ensure mmtp is started before your application:
-
-        def application do
-          [applications: [:mmtp]]
-        end
-
+To setup google api, visit console and set whitelisted IPs and modify source files to change api key
